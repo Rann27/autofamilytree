@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+.env.local
+.env*.local
+.claude/
+
+# Spec document — private, not for repo
+FAMILYTREE-SPEC.md
+
+# Local data — fresh repo only
+data/members.json
+
+# Uploaded photos — local only
+public/photos/*
+!public/photos/.gitkeep
