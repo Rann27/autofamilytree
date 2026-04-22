@@ -100,6 +100,12 @@ export function buildTreeLayout(members: Member[], isMobile = false): LayoutResu
 
   const layoutedNodes = nodes.map(node => {
     const nodeWithPos = g.node(node.id);
+    if (!nodeWithPos) {
+      return {
+        ...node,
+        position: { x: 0, y: 0 },
+      };
+    }
     return {
       ...node,
       position: {

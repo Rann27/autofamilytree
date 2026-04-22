@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Silsilah {config.familyName}</title>
+        <title>{`Silsilah ${config.familyName}`}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={`Pohon keluarga ${config.familyName} — ${config.subtitle}`} />
       </Head>
@@ -40,11 +40,11 @@ export default function Home() {
       {/* Header */}
       <header className="site-header">
         <OrnamentalDivider />
-        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
+        <h1>{`SILSILAH ${config.familyName.toUpperCase()}`}</h1>
         <div className="subtitle">{config.subtitle}</div>
         <OrnamentalDivider />
         <div className="member-count" style={{ marginTop: 4 }}>
-          {members.length} Anggota Keluarga
+          {`${members.length} Anggota Keluarga`}
         </div>
       </header>
 

@@ -160,7 +160,7 @@ export default function AdminPage() {
       {/* Header */}
       <header className="site-header" style={{ position: 'relative' }}>
         <OrnamentalDivider />
-        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
+        <h1>{`SILSILAH ${config.familyName.toUpperCase()}`}</h1>
         <div className="subtitle">{config.subtitle}</div>
         <OrnamentalDivider />
       </header>
