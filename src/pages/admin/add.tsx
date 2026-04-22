@@ -21,7 +21,7 @@ export default function AddPage() {
   }, [router]);
 
   useEffect(() => {
-    fetch('/config.json').then(r => r.json()).then(setConfig).catch(() => {});
+    fetch('/api/config/').then(r => r.json()).then(setConfig).catch(() => {});
     fetch('/api/members/')
       .then(r => r.json())
       .then(data => setMembers(data.members || []))
@@ -38,7 +38,7 @@ export default function AddPage() {
 
       <header className="site-header" style={{ position: 'relative' }}>
         <OrnamentalDivider />
-        <h1>SILSILAH KELUARGA BESAR</h1>
+        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
         <div className="subtitle">{config.familyName}</div>
         <OrnamentalDivider />
       </header>

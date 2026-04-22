@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Plus, LogOut } from 'lucide-react';
+import { Plus, LogOut, Settings } from 'lucide-react';
 import { Member } from '../../lib/members';
 import OrnamentalDivider from '../../components/OrnamentalDivider';
 import AdminTable from '../../components/AdminTable';
@@ -13,10 +13,20 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState('');
   const [pwError, setPwError] = useState('');
-  const [config, setConfig] = useState({ familyName: 'Keluarga Besar', subtitle: '' });
+  const [config, setConfig] = useState({ familyName: 'Keluarga Besar', subtitle: 'Silsilah & Nasab' });
+
+  // Settings panel
+  const [showSettings, setShowSettings] = useState(false);
+  const [settingsFamilyName, setSettingsFamilyName] = useState('');
+  const [settingsSubtitle, setSettingsSubtitle] = useState('');
+  const [settingsSaving, setSettingsSaving] = useState(false);
 
   useEffect(() => {
-    fetch('/config.json').then(r => r.json()).then(setConfig).catch(() => {});
+    fetch('/api/config/').then(r => r.json()).then(cfg => {
+      setConfig(cfg);
+      setSettingsFamilyName(cfg.familyName);
+      setSettingsSubtitle(cfg.subtitle);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -65,6 +75,29 @@ export default function AdminPage() {
 
   const handleEdit = (id: string) => {
     router.push(`/admin/edit/${id}/`);
+  };
+
+  const handleSaveSettings = async () => {
+    setSettingsSaving(true);
+    try {
+      const res = await fetch('/api/config/', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          familyName: settingsFamilyName.trim(),
+          subtitle: settingsSubtitle.trim(),
+        }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setConfig(updated);
+        setShowSettings(false);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSettingsSaving(false);
+    }
   };
 
   if (!authed) {
@@ -127,8 +160,8 @@ export default function AdminPage() {
       {/* Header */}
       <header className="site-header" style={{ position: 'relative' }}>
         <OrnamentalDivider />
-        <h1>SILSILAH KELUARGA BESAR</h1>
-        <div className="subtitle">{config.familyName}</div>
+        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
+        <div className="subtitle">{config.subtitle}</div>
         <OrnamentalDivider />
       </header>
 
@@ -149,6 +182,14 @@ export default function AdminPage() {
             <OrnamentalDivider style={{ display: 'inline-flex', width: 'auto', flex: 'unset' }} />
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              className="btn-secondary"
+              onClick={() => setShowSettings(!showSettings)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+            >
+              <Settings size={16} />
+              <span>Pengaturan</span>
+            </button>
             <button className="btn-primary" onClick={() => router.push('/admin/add/')} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Plus size={16} />
               <span>Tambah Anggota</span>
@@ -160,6 +201,61 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <div style={{
+          background: 'var(--color-bg-dark)',
+          borderBottom: '1.5px solid var(--color-border)',
+          padding: '20px',
+          maxWidth: 1200,
+          margin: '0 auto',
+        }}>
+          <div className="card-simple" style={{ maxWidth: 480, margin: '0 auto' }}>
+            <OrnamentalDivider />
+            <h3 style={{
+              textAlign: 'center',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              fontSize: 16,
+              color: 'var(--color-text)',
+              marginBottom: 20,
+            }}>
+              Pengaturan Pohon Keluarga
+            </h3>
+
+            <div className="form-group">
+              <label className="form-label">Nama Keluarga</label>
+              <input
+                type="text"
+                className="input-field"
+                value={settingsFamilyName}
+                onChange={e => setSettingsFamilyName(e.target.value)}
+                placeholder="Contoh: Keluarga Besar Ahmad"
+              />
+              <p className="form-hint">Nama ini akan tampil di header halaman utama dan admin.</p>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Subjudul</label>
+              <input
+                type="text"
+                className="input-field"
+                value={settingsSubtitle}
+                onChange={e => setSettingsSubtitle(e.target.value)}
+                placeholder="Contoh: Silsilah & Nasab"
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+              <button className="btn-secondary" onClick={() => setShowSettings(false)}>Batal</button>
+              <button className="btn-primary" onClick={handleSaveSettings} disabled={settingsSaving}>
+                {settingsSaving ? 'Menyimpan...' : 'Simpan Pengaturan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <main style={{ padding: '20px', maxWidth: 1200, margin: '0 auto' }}>

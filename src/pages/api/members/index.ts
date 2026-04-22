@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { readMembers, addMember, addChild, addSpouse } from '../../../lib/members';
+import { readConfig, writeConfig } from '../../../lib/config';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -33,6 +34,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'Punjer sudah ada. Pohon keluarga sudah diinisialisasi.' });
       }
       newMember = addMember(baseMember);
+
+      // Auto-set familyName from Punjer if still default
+      const config = readConfig();
+      if (config.familyName === 'Keluarga Besar') {
+        writeConfig({ familyName: `Keluarga Besar ${name.trim()}` });
+      }
     } else if (addType === 'spouse') {
       if (!partnerId) {
         return res.status(400).json({ error: 'Pasangan wajib dipilih' });

@@ -10,6 +10,7 @@ FAMILYTREE-SPEC.md
 
 # Local data — fresh repo only
 data/members.json
+data/config.json
 
 # Uploaded photos — local only
 public/photos/*

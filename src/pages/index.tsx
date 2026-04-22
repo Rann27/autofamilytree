@@ -18,7 +18,7 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/config.json').then(r => r.json()),
+      fetch('/api/config/').then(r => r.json()),
       fetch('/api/members/').then(r => r.json()),
     ])
       .then(([cfg, data]) => {
@@ -40,8 +40,8 @@ export default function Home() {
       {/* Header */}
       <header className="site-header">
         <OrnamentalDivider />
-        <h1>SILSILAH KELUARGA BESAR</h1>
-        <div className="subtitle">{config.familyName}</div>
+        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
+        <div className="subtitle">{config.subtitle}</div>
         <OrnamentalDivider />
         <div className="member-count" style={{ marginTop: 4 }}>
           {members.length} Anggota Keluarga

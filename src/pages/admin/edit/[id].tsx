@@ -25,7 +25,7 @@ export default function EditPage() {
   useEffect(() => {
     if (!id || typeof id !== 'string') return;
 
-    fetch('/config.json').then(r => r.json()).then(setConfig).catch(() => {});
+    fetch('/api/config/').then(r => r.json()).then(setConfig).catch(() => {});
 
     Promise.all([
       fetch('/api/members/').then(r => r.json()),
@@ -48,7 +48,7 @@ export default function EditPage() {
 
       <header className="site-header" style={{ position: 'relative' }}>
         <OrnamentalDivider />
-        <h1>SILSILAH KELUARGA BESAR</h1>
+        <h1>SILSILAH {config.familyName.toUpperCase()}</h1>
         <div className="subtitle">{config.familyName}</div>
         <OrnamentalDivider />
       </header>
